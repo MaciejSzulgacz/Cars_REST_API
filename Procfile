@@ -1,1 +1,1 @@
-web: gunicorn wsgi:app
+web: gunicorn REST_API_Cars.wsgi:application --log-file - --log-level debug
