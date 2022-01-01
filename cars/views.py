@@ -22,6 +22,7 @@ class CreateCarView(views.APIView):
             }
             list_of_cars.append(dict_car)
         return JsonResponse(list_of_cars, safe=False)
+
     def post(self, request):
         serializer = CarSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -29,24 +30,22 @@ class CreateCarView(views.APIView):
         return Response(serializer.data)
 
 
-class FindCarView(views.APIView):
-    def post(self, request):
-        dict_car_id = request.data
-        car_id = dict_car_id['id']
-        find_car = Car.objects.filter(id=car_id).values()
-        car_make = find_car[0]['make']
-        car_model = find_car[0]['model']
-        dict_car = {
-            "make": car_make,
-            "model": car_model
-        }
-        return JsonResponse(dict_car)
+# class FindCarView(views.APIView):
+#     def post(self, request):
+#         dict_car_id = request.data
+#         car_id = dict_car_id['id']
+#         find_car = Car.objects.filter(id=car_id).values()
+#         car_make = find_car[0]['make']
+#         car_model = find_car[0]['model']
+#         dict_car = {
+#             "make": car_make,
+#             "model": car_model
+#         }
+#         return JsonResponse(dict_car)
 
 
-class ListOfCarsView(views.APIView):
+class WelcomeView(views.APIView):
     def get(self, request):
-        list_of_cars = Car.objects.all()
-        cars_serializer = CarSerializer(list_of_cars, many=True)
         return JsonResponse("Welcome on my APP", safe=False)
 
 
@@ -65,27 +64,27 @@ class CreateRateView(views.APIView):
         return Response(serializer.data)
 
 
-class ListOfRatesView(views.APIView):
-    def get(self, request):
-        list_of_rates = Rate.objects.all()
-        rates_serializer = RateSerializer(list_of_rates, many=True)
-        return JsonResponse(rates_serializer.data, safe=False)
+# class ListOfRatesView(views.APIView):
+#     def get(self, request):
+#         list_of_rates = Rate.objects.all()
+#         rates_serializer = RateSerializer(list_of_rates, many=True)
+#         return JsonResponse(rates_serializer.data, safe=False)
 
 
-class FindRateView(views.APIView):
-    def post(self, request):
-        dict_of_data = request.data
-        rate_id = dict_of_data['id']
-        find_rate = Rate.objects.filter(id=rate_id).values()
-        my_rate = Rate.objects.get(id=rate_id)
-        my_car = my_rate.cars.all().values()
-        car_id = my_car[0]['id']
-        rate = find_rate[0]['rate']
-        dict_rate = {
-            "car_id": car_id,
-            "rating": rate,
-        }
-        return JsonResponse(dict_rate)
+# class FindRateView(views.APIView):
+#     def post(self, request):
+#         dict_of_data = request.data
+#         rate_id = dict_of_data['id']
+#         find_rate = Rate.objects.filter(id=rate_id).values()
+#         my_rate = Rate.objects.get(id=rate_id)
+#         my_car = my_rate.cars.all().values()
+#         car_id = my_car[0]['id']
+#         rate = find_rate[0]['rate']
+#         dict_rate = {
+#             "car_id": car_id,
+#             "rating": rate,
+#         }
+#         return JsonResponse(dict_rate)
 
 
 class PopularCarsView(views.APIView):
