@@ -9,6 +9,19 @@ from .models import Car, Rate
 
 
 class CreateCarView(views.APIView):
+    def get(self, request):
+        queryset_of_cars = Car.objects.all().values()
+        list_of_cars = []
+        for car in queryset_of_cars:
+            rate = Rate.objects.filter(cars=car['id']).aggregate(Avg('rate'))
+            dict_car = {
+                "id": car['id'],
+                "make": car['make'],
+                "model": car['model'],
+                "avg_rating": rate['rate__avg'],
+            }
+            list_of_cars.append(dict_car)
+        return JsonResponse(list_of_cars, safe=False)
     def post(self, request):
         serializer = CarSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -16,37 +29,29 @@ class CreateCarView(views.APIView):
         return Response(serializer.data)
 
 
-class CarView(views.APIView):
+class FindCarView(views.APIView):
     def post(self, request):
-        dict_id = request.data
-        car_id = dict_id['car_id']
-        list_of_cars = Car.objects.filter(id=car_id).values()
-        take_id = list_of_cars[0]['id']
-        take_make = list_of_cars[0]['make']
-        take_model = list_of_cars[0]['model']
-        dict_rate_average = Rate.objects.filter(cars=car_id).aggregate(Avg('rate'))
-        rate_average = dict_rate_average['rate__avg']
-        make_dict = {
-            "id": take_id,
-            "make": take_make,
-            "model": take_model,
-            "avg_rating": rate_average
+        dict_car_id = request.data
+        car_id = dict_car_id['id']
+        find_car = Car.objects.filter(id=car_id).values()
+        car_make = find_car[0]['make']
+        car_model = find_car[0]['model']
+        dict_car = {
+            "make": car_make,
+            "model": car_model
         }
-        return Response(make_dict)
+        return JsonResponse(dict_car)
 
 
 class ListOfCarsView(views.APIView):
     def get(self, request):
         list_of_cars = Car.objects.all()
         cars_serializer = CarSerializer(list_of_cars, many=True)
-        print(cars_serializer)
         return JsonResponse(cars_serializer.data, safe=False)
 
 
 class DeleteCarView(views.APIView):
-    def delete(self, request):
-        dict_id = request.data
-        car_id = dict_id['car_id']
+    def delete(self, request, car_id):
         obj = get_object_or_404(Car, id=car_id)
         obj.delete()
         return JsonResponse("Car was deleted successfully.", safe=False)
@@ -55,7 +60,6 @@ class DeleteCarView(views.APIView):
 class CreateRateView(views.APIView):
     def post(self, request):
         serializer = RateSerializer(data=request.data)
-        print(serializer)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
@@ -65,14 +69,38 @@ class ListOfRatesView(views.APIView):
     def get(self, request):
         list_of_rates = Rate.objects.all()
         rates_serializer = RateSerializer(list_of_rates, many=True)
-        print(rates_serializer)
         return JsonResponse(rates_serializer.data, safe=False)
 
 
-class RateView(views.APIView):
+class FindRateView(views.APIView):
     def post(self, request):
         dict_of_data = request.data
-        cars_id = dict_of_data['cars']
-        list_of_rates = Rate.objects.filter(cars=cars_id)
-        rates_serializer = RateSerializer(list_of_rates, many=True)
-        return JsonResponse(rates_serializer.data, safe=False)
+        rate_id = dict_of_data['id']
+        find_rate = Rate.objects.filter(id=rate_id).values()
+        my_rate = Rate.objects.get(id=rate_id)
+        my_car = my_rate.cars.all().values()
+        car_id = my_car[0]['id']
+        rate = find_rate[0]['rate']
+        dict_rate = {
+            "car_id": car_id,
+            "rating": rate,
+        }
+        return JsonResponse(dict_rate)
+
+
+class PopularCarsView(views.APIView):
+    def get(self, request):
+        queryset_of_cars = Car.objects.all().values()
+        list_of_cars = []
+        for car in queryset_of_cars:
+            rate = Rate.objects.filter(cars=car['id']).count()
+            dict_car = {
+                "id": car['id'],
+                "make": car['make'],
+                "model": car['model'],
+                "rates_number": rate,
+            }
+            list_of_cars.append(dict_car)
+            sorted_list_of_cars = sorted(list_of_cars, key=lambda x: -x['rates_number'])
+            top_list_of_cars = sorted_list_of_cars[0:2]
+        return JsonResponse(top_list_of_cars, safe=False)
