@@ -47,7 +47,7 @@ class ListOfCarsView(views.APIView):
     def get(self, request):
         list_of_cars = Car.objects.all()
         cars_serializer = CarSerializer(list_of_cars, many=True)
-        return JsonResponse(cars_serializer.data, safe=False)
+        return JsonResponse("Welcome on my APP", safe=False)
 
 
 class DeleteCarView(views.APIView):
