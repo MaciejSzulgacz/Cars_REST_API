@@ -12,8 +12,10 @@ from .models import Car, Rate
 
 class CreateCarView(views.APIView):
     def get(self, request):
-        try:
-            queryset_of_cars = Car.objects.all().values()
+        queryset_of_cars = Car.objects.all().values()
+        if not queryset_of_cars:
+            return JsonResponse("Database is empty, please send data to the database.", safe=False)
+        else:
             list_of_cars = []
             for car in queryset_of_cars:
                 rate = Rate.objects.filter(cars=car['id']).aggregate(Avg('rate'))
@@ -25,8 +27,6 @@ class CreateCarView(views.APIView):
                 }
                 list_of_cars.append(dict_car)
             return JsonResponse(list_of_cars, safe=False)
-        except ProgrammingError:
-            return JsonResponse("Database is empty, please send data to the database.")
 
     def post(self, request):
         serializer = CarSerializer(data=request.data)
