@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.db.models import Avg
 import requests
+from requests import HTTPError
 
 from .serializers import CarSerializer, RateSerializer
 from .models import Car, Rate
@@ -51,17 +52,23 @@ class WelcomeView(views.APIView):
 
 class DeleteCarView(views.APIView):
     def delete(self, request, car_id):
-        obj = get_object_or_404(Car, id=car_id)
-        obj.delete()
-        return HttpResponse("Car was deleted successfully.")
+        try:
+            obj = Car.objects.get(id=car_id)
+            obj.delete()
+            return HttpResponse("Car was deleted successfully.")
+        except Car.DoesNotExist:
+            return HttpResponse("Please provide correct data, car with given id doesn't exist.")
 
 
 class CreateRateView(views.APIView):
     def post(self, request):
-        serializer = RateSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+        try:
+            serializer = RateSerializer(data=request.data)
+            serializer.is_valid(raise_exception=False)
+            serializer.save()
+            return Response(serializer.data)
+        except AssertionError:
+            return HttpResponse("Please provide correct data, rate is not between 1 and 5 or car with given id doesn't exist.")
 
 
 class PopularCarsView(views.APIView):
@@ -81,5 +88,5 @@ class PopularCarsView(views.APIView):
                 sorted_list_of_cars = sorted(list_of_cars, key=lambda x: -x['rates_number'])
                 top_list_of_cars = sorted_list_of_cars[0:2]
             return JsonResponse(top_list_of_cars, safe=False)
-        except UnboundLocalError:
+        except (UnboundLocalError):
             return HttpResponse("Database is empty, please send some data to the database.")
