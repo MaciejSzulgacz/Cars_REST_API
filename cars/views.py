@@ -1,3 +1,5 @@
+from sqlite3 import ProgrammingError
+
 from django.http import JsonResponse
 from rest_framework import views
 from rest_framework.response import Response
@@ -10,18 +12,21 @@ from .models import Car, Rate
 
 class CreateCarView(views.APIView):
     def get(self, request):
-        queryset_of_cars = Car.objects.all().values()
-        list_of_cars = []
-        for car in queryset_of_cars:
-            rate = Rate.objects.filter(cars=car['id']).aggregate(Avg('rate'))
-            dict_car = {
-                "id": car['id'],
-                "make": car['make'],
-                "model": car['model'],
-                "avg_rating": rate['rate__avg'],
-            }
-            list_of_cars.append(dict_car)
-        return JsonResponse(list_of_cars, safe=False)
+        try:
+            queryset_of_cars = Car.objects.all().values()
+            list_of_cars = []
+            for car in queryset_of_cars:
+                rate = Rate.objects.filter(cars=car['id']).aggregate(Avg('rate'))
+                dict_car = {
+                    "id": car['id'],
+                    "make": car['make'],
+                    "model": car['model'],
+                    "avg_rating": rate['rate__avg'],
+                }
+                list_of_cars.append(dict_car)
+            return JsonResponse(list_of_cars, safe=False)
+        except ProgrammingError:
+            return JsonResponse("Database is empty, please send data to the database.")
 
     def post(self, request):
         serializer = CarSerializer(data=request.data)
