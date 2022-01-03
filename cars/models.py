@@ -8,4 +8,4 @@ class Car(models.Model):
 
 class Rate(models.Model):
     rate = models.IntegerField()
-    cars = models.ManyToManyField(Car)
+    car_id = models.ManyToManyField(Car)

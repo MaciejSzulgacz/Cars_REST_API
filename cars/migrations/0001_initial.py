@@ -7,24 +7,39 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Car',
+            name="Car",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('make', models.CharField(max_length=128)),
-                ('model', models.CharField(max_length=128)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("make", models.CharField(max_length=128)),
+                ("model", models.CharField(max_length=128)),
             ],
         ),
         migrations.CreateModel(
-            name='Rate',
+            name="Rate",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('rate', models.FloatField()),
-                ('cars', models.ManyToManyField(to='cars.Car')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("rate", models.FloatField()),
+                ("cars", models.ManyToManyField(to="cars.Car")),
             ],
         ),
     ]

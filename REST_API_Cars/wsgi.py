@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'REST_API_Cars.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "REST_API_Cars.settings")
 
 application = get_wsgi_application()
