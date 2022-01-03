@@ -4,11 +4,11 @@
 
 In order to use all the functionalities of the application, please send some sample data 
 with POST /cars with body {"make": "Opel", "model": "Ampera"} and POST /rate with body 
-{"rate": 5, "cars": 1}.
+{"rate": 5, "car_id": 1}.
 
 ### Technology stack ###
 
-Python 3.8.10, Django, Git
+Python 3.8.10, Django, Docker, Git
 
 ### Requirements ###
 
