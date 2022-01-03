@@ -1,11 +1,7 @@
 from django.contrib import admin
 from django.urls import path
-from rest_framework.routers import SimpleRouter
 
-from cars.views import (CreateCarView, CreateRateView, DeleteCarView,
-                        PopularCarsView, WelcomeView)
-
-router = SimpleRouter()
+from cars.views import CreateCarView, CreateRateView, DeleteCarView, PopularCarsView, WelcomeView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -18,5 +14,3 @@ urlpatterns = [
     path("popular", PopularCarsView.as_view(), name="popular_cars"),
     path("popular/", PopularCarsView.as_view(), name="popular_cars"),
 ]
-
-urlpatterns += router.urls

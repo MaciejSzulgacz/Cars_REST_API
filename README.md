@@ -36,5 +36,5 @@ Python 3.8.10, Django, Docker, Git
     `source ./vevn/bin/activate`
 * Make migrations:
 	`python3 manage.py migrate`
-* Run flask application:
+* Run django application:
     `python3 manage.py runserver`

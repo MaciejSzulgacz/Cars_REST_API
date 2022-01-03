@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 
@@ -7,5 +8,5 @@ class Car(models.Model):
 
 
 class Rate(models.Model):
-    rate = models.IntegerField()
+    rate = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     car_id = models.ManyToManyField(Car)
