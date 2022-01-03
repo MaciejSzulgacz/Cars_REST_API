@@ -24,7 +24,7 @@ Python 3.8.10, Django, Docker, Git
 * Create venv:
 	`python3 -m venv ./venv/`
 * Checkout to venv:
-	`source ./venv/bin/activate`
+	`source venv/bin/activate`
 * Install requirements:
 	`pip install -r requirements.txt`
 * Check requirements:
@@ -33,6 +33,8 @@ Python 3.8.10, Django, Docker, Git
 ### Run application locally ###
 
 * Source the virtual environment:
-	`source ./vevn/bin/activate`
+    `source ./vevn/bin/activate`
+* Make migrations:
+	`python3 manage.py migrate`
 * Run flask application:
-	`python3 manage.py runserver`
+    `python3 manage.py runserver`
