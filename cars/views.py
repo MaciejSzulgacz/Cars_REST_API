@@ -32,7 +32,9 @@ class CreateCarView(views.APIView):
         sent_car = request.data
         car_make = sent_car["make"]
         car_model = sent_car["model"]
-        response_from_api = requests.get(f"https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/{car_make}?format=json")
+        response_from_api = requests.get(
+            f"https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/{car_make}?format=json"
+        )
         data_from_api = response_from_api.json()
         result_from_api = data_from_api["Results"]
         if not any(a["Model_Name"] == f"{car_model}" for a in result_from_api):
